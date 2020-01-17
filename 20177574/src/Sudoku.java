@@ -3,10 +3,10 @@ import java.util.ArrayList;
 
 
 /**
- * ×¢: Sudoku.javaÊ¹ÓÃÁËÎ´¾­¼ì²é»ò²»°²È«µÄ²Ù×÷¡£
- * ×¢: ÓĞ¹ØÏêÏ¸ĞÅÏ¢, ÇëÊ¹ÓÃ -Xlint:unchecked ÖØĞÂ±àÒë¡£
- * ½â¾ö·½·¨£º
- * ÔÚÀàÇ°¼ÓÉÏ@SuppressWarnings("unchecked")
+ * æ³¨: Sudoku.javaä½¿ç”¨äº†æœªç»æ£€æŸ¥æˆ–ä¸å®‰å…¨çš„æ“ä½œã€‚
+ * æ³¨: æœ‰å…³è¯¦ç»†ä¿¡æ¯, è¯·ä½¿ç”¨ -Xlint:unchecked é‡æ–°ç¼–è¯‘ã€‚
+ * è§£å†³æ–¹æ³•ï¼š
+ * åœ¨ç±»å‰åŠ ä¸Š@SuppressWarnings("unchecked")
  **/
 
 @SuppressWarnings("unchecked")
@@ -20,21 +20,25 @@ public class Sudoku {
 
     public static void main(String[] args) {
 
-        // java Sudoku -m 3 -n 5 -i input.txt -o output.txt
+        //java Sudoku -m 3 -n 5 -i input.txt -o output.txt
         m = Integer.parseInt(args[1]);
         n = Integer.parseInt(args[3]);
         i_name = args[5];
         o_name = args[7];
+//        m=3;
+//        n=6;
+//        i_name = "input.txt";
+//        o_name = "output.txt";
         int a[][] = new int[m][m];
         if (m == 3) {
             if (n > 0) {
                 intput(a);
             } else {
-                System.out.println("ÊäÈëµÄ²ÎÊınÓĞÎó£¡");
+                System.out.println("è¾“å…¥çš„å‚æ•°næœ‰è¯¯ï¼");
                 System.exit(0);
             }
         } else {
-            System.out.println("ÊäÈëµÄ²ÎÊımÓĞÎó£¡µ±Ç°°æ±¾½öÖ§³Ö3¹¬¸ñÊı¶À");
+            System.out.println("è¾“å…¥çš„å‚æ•°mæœ‰è¯¯ï¼å½“å‰ç‰ˆæœ¬ä»…æ”¯æŒ3å®«æ ¼æ•°ç‹¬");
             System.exit(0);
         }
 
@@ -54,7 +58,6 @@ public class Sudoku {
                 }
             }
             String str2 = null;
-            ArrayList<String[]> list2 = new ArrayList<>();
             int k = 0;
             for (int i = 0; i < list.size(); i++) {
                 if (i > 0 && i % m == 0) {
@@ -90,33 +93,52 @@ public class Sudoku {
     }
 
     public static int[][] save(int a[][]) {
+        ArrayList<int[]> list = new ArrayList();
+        int[] b = new int[3];
+        int p = 1;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < m; j++) {
                 if (a[i][j] == 0) {
-                    a[i][j] = number(i, j, a);
+                    a[i][j] = number(i, j, a, p);
+
+                    if (a[i][j] == 0) {   //ç”¨äºåˆ¤æ–­è¿™ä¸€æ­¥æ˜¯å¦æ²¡æœ‰æ•°å¯å¡«ï¼Œå¦‚æœä¸º0ï¼Œå°±æ”¾å›åˆ°ä¸Šä¸€æ­¥åˆ¤æ–­çš„åœ°æ–¹ï¼Œå†æ¬¡è¿›è¡Œåˆ¤æ–­
+                        b = list.get(list.size() - 1);
+                        i = b[0];
+                        j = b[1];
+                        if (b[2] + 1 > 3) {
+                            System.out.println("è¯¥æ•°æ®é¢˜ç›®é”™è¯¯ï¼");
+                            System.exit(0);
+                        } else {
+                            a[i][j] = number(i, j, a, b[2] + 1);
+                            continue;
+                        }
+                    } else {
+                        b[0] = i;
+                        b[1] = j;
+                        b[2] = a[i][j];
+                        list.add(b);
+                    }
                 }
             }
         }
+
         return a;
     }
 
-    public static int number(int i, int j, int a[][]) {
+    public static int number(int i, int j, int a[][], int p) { //åˆ¤æ–­è¯¥å¡«çš„æ•°å­—
         int num = 0;
-        for (int k = 1; k <= m; k++) {
+        for (int k = p; k <= m; k++) {
             if (a[i][0] != k && a[i][1] != k && a[i][2] != k) {
                 if (a[0][j] != k && a[1][j] != k && a[2][j] != k) {
                     num = k;
-                } else {
-                    continue;
+                    break;
                 }
-            } else {
-                continue;
             }
         }
         return num;
     }
 
-    public static void output(int a[][]) {
+    public static void output(int a[][]) { //å°†ç»“æœè¾“å‡ºåˆ°æŒ‡å®šçš„æ–‡ä»¶å†…
         File file = new File(path + "\\" + o_name);
         try {
             FileWriter fw = new FileWriter(file, true);
@@ -141,12 +163,12 @@ public class Sudoku {
         }
     }
 
-    public static boolean check(int a[][]) {
+    public static boolean check(int a[][]) {//æ£€æŸ¥æœ€åè¾“å‡ºçš„ç»“æœæ˜¯å¦æ­£ç¡®
         boolean flag = false;
         for (int i = 0; i < a.length; i++) {
             for (int j = 0; j < a.length; j++) {
                 if (a[i][j] == '0') {
-                    System.out.println("ÊäÈëÄÚÈİÓĞÎó£¬ÎŞ´ğ°¸!");
+                    System.out.println("è¾“å…¥å†…å®¹æœ‰è¯¯ï¼Œæ— ç­”æ¡ˆ!");
                     flag = false;
                     System.exit(0);
                 } else {
