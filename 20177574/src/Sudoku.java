@@ -26,18 +26,22 @@ public class Sudoku {
         i_name = args[5];
         o_name = args[7];
         int a[][] = new int[m][m];
-        if (m == 3) {
-            if (n > 0) {
-                input(a, m);
+
+        if (!args[0].equals("-m") || !args[2].equals("-n") || !args[4].equals("-i") || !args[6].equals("-o")) {
+            System.out.println("参数输入错误！！");
+        } else {
+            if (m == 3) {
+                if (n > 0) {
+                    input(a, m);
+                } else {
+                    System.out.println("输入的参数n有误！");
+                    System.exit(0);
+                }
             } else {
-                System.out.println("输入的参数n有误！");
+                System.out.println("输入的参数m有误！当前版本仅支持3宫格数独");
                 System.exit(0);
             }
-        } else {
-            System.out.println("输入的参数m有误！当前版本仅支持3宫格数独");
-            System.exit(0);
         }
-
     }
 
     public static void input(int a[][], int m) {
@@ -89,9 +93,11 @@ public class Sudoku {
             }
             fileReader.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("文件目录输入错误！未找到文件！");
+            System.exit(0);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("输入异常！");
+            System.exit(0);
         }
     }
 
@@ -162,7 +168,8 @@ public class Sudoku {
             fw.write("\r\n");
             fw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("文件目录错误！");
+            System.exit(0);
         }
     }
 
