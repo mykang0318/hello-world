@@ -105,12 +105,13 @@ public class Sudoku {
         ArrayList<int[]> list = new ArrayList();
         int[] b = new int[3];
         int p = 1;
+		int g=1;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < m; j++) {
                 if (a[i][j] == 0) {
                     a[i][j] = number(i, j, a, p, m);
 
-                    if (a[i][j] == 0) {   //用于判断这一步是否没有数可填，如果为0，就放回到上一步判断的地方，再次进行判断
+                    if (a[i][j] == 0 && g!=1) {   //用于判断这一步是否没有数可填，如果为0，就放回到上一步判断的地方，再次进行判断
                         b = list.get(list.size() - 1);
                         i = b[0];
                         j = b[1];
@@ -121,13 +122,19 @@ public class Sudoku {
                             a[i][j] = number(i, j, a, b[2] + 1, m);
                             continue;
                         }
-                    } else {
+                    }
+					else if(g == 1 && a[i][j] == 0){
+						System.out.println("该数据题目错误！");
+						System.exit(0);
+					}
+					else {
                         b[0] = i;
                         b[1] = j;
                         b[2] = a[i][j];
                         list.add(b);
                     }
                 }
+				g++;
             }
         }
 
